@@ -1,21 +1,14 @@
 
     "use strict";
-    const IoRedis = require("ioredis");
+
     const assert = require('assert'),
+        DataStore = require("../../src/lib/DataStore"),
         DataString = require("../../src/lib/DataString"),
         nuke = require("../../src/lib/nuke");
 
-    const config = {
-        port: 6379,
-        host: "localhost",
-        family:4,
-        password:"",
-        db:0,
-        enableReadyCheck:true,
-        enableOfflineQueue:true
-    };
 
-    var redis = new IoRedis( config );
+    const DATASTORE = new DataStore();
+
 
 
     describe('Objects', function() {
@@ -53,9 +46,9 @@
 
             nuke();
 
-            new DataString( "this is some data" ).save( redis ).then( function(){
+            new DataString( "this is some data" ).save( DATASTORE ).then( function(){
 
-                new DataString( null,"4f84cf87aa25fe0167a10bfa08ba9efd04c16412" ).load( redis ).then( function( data ){
+                new DataString( null,"4f84cf87aa25fe0167a10bfa08ba9efd04c16412" ).load( DATASTORE ).then( function( data ){
 
                     assert.equal( data.data, "this is some data" );
                     done();
@@ -70,9 +63,9 @@
 
             nuke();
 
-            new DataString( { "title": "this is some blobby data"} ).save( redis ).then( function(){
+            new DataString( { "title": "this is some blobby data"} ).save( DATASTORE ).then( function(){
 
-                new DataString( null, "b0014d4cc13fbf50043a4ff51465ba89665ff422" ).load( redis ).then( function( data ){
+                new DataString( null, "b0014d4cc13fbf50043a4ff51465ba89665ff422" ).load( DATASTORE ).then( function( data ){
 
                     var json = JSON.parse( data.data );
                     assert.equal( json.title, "this is some blobby data" );
@@ -87,9 +80,6 @@
     });
 
 
-
-    //
-    //
     //describe('Journalling', function() {
     //
     //    it('should journal items added to datastore', function (done) {
