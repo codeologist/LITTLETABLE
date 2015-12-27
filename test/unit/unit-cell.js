@@ -1,6 +1,6 @@
 
     "use strict";
-
+    const IoRedis = require("ioredis");
     const assert = require('assert'),
         DataString = require("../../src/lib/DataString"),
         nuke = require("../../src/lib/nuke");
@@ -15,7 +15,7 @@
         enableOfflineQueue:true
     };
 
-
+    var redis = new IoRedis( config );
 
 
     describe('Objects', function() {
@@ -53,9 +53,9 @@
 
             nuke();
 
-            new DataString( "this is some data" ).save( config ).then( function(){
+            new DataString( "this is some data" ).save( redis ).then( function(){
 
-                new DataString( null,"4f84cf87aa25fe0167a10bfa08ba9efd04c16412" ).load( config ).then( function( data ){
+                new DataString( null,"4f84cf87aa25fe0167a10bfa08ba9efd04c16412" ).load( redis ).then( function( data ){
 
                     assert.equal( data.data, "this is some data" );
                     done();
@@ -70,11 +70,11 @@
 
             nuke();
 
-            new DataString( { "title": "this is some blobby data"} ).save( config ).then( function(){
+            new DataString( { "title": "this is some blobby data"} ).save( redis ).then( function(){
 
-                new DataString( null, "b0014d4cc13fbf50043a4ff51465ba89665ff422" ).load( config ).then( function( data ){
+                new DataString( null, "b0014d4cc13fbf50043a4ff51465ba89665ff422" ).load( redis ).then( function( data ){
 
-                    var json = JSON.parse( data.data )
+                    var json = JSON.parse( data.data );
                     assert.equal( json.title, "this is some blobby data" );
 
                     done();
@@ -85,3 +85,23 @@
 
         });
     });
+
+
+
+    //
+    //
+    //describe('Journalling', function() {
+    //
+    //    it('should journal items added to datastore', function (done) {
+    //
+    //        nuke();
+    //
+    //        var journal = new Journal();
+    //
+    //        new DataString( "this is some data" ).save( config ).then().then( function(){
+    //
+    //            journal.getItem();
+    //
+    //        }).catch( err => console.log( "SAVE ERROR:" + err) );
+    //    });
+    //});
