@@ -24,11 +24,12 @@ stage 1: proof of concept
             - user can create named ranges ( a pointer to a section of table )
             - user can create saved ranges ( a clone of the data of a range)
 
-
+        commiting
+        branching
+        journaling/blockchain
+        
 stage 2: alpha
         - move appropriate parts to LUA scripts
-
-        - Journaling
         - user can get a realtime range
         
 stage 3: beta
